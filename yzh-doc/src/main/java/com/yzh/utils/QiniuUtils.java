@@ -28,7 +28,7 @@ public class QiniuUtils {
     @Value("${qiniu.bucketname}")// 要上传的空间
     private String bucketname;
     @Value("${qiniu.DOMAIN}")
-    private String DOMAIN;//域名
+    private String domain;//域名
 
     //private static final String style = "自定义的图片样式";
     private Auth getAuth() {
@@ -53,7 +53,7 @@ public class QiniuUtils {
             if (res.isOK()) {
                 Ret ret = res.jsonToObject(Ret.class);
                 //如果不需要对图片进行样式处理，则使用以下方式即可
-                return DOMAIN+ret.key;
+                return domain+ret.key;
             }
         } catch (QiniuException e) {
             Response r = e.response;
@@ -85,7 +85,7 @@ public class QiniuUtils {
         okhttp3.Response response = client.newCall(request).execute();
         System.out.println(response);
         //如果不需要添加图片样式，使用以下方式
-        return DOMAIN + key;
+        return domain + key;
         //return DOMAIN + key + "?" + style;
     }
 
