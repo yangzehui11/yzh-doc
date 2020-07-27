@@ -8,6 +8,8 @@ import org.apache.poi.hslf.model.Slide;
 import org.apache.poi.hslf.usermodel.SlideShow;
 import org.apache.poi.xslf.usermodel.XMLSlideShow;
 import org.apache.poi.xslf.usermodel.XSLFSlide;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,10 +22,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-@CrossOrigin
 @RestController
-public class DocController {
-    private QiniuUtils qiniuCloudUtil=new QiniuUtils();
+public class DocController extends BaseController {
+    @Autowired
+    private QiniuUtils qiniuCloudUtil;
+    @Value("${qiniu.AK}")
+    private String ak;
+    @RequestMapping("/test")
+    public void t(){
+        System.out.println("ak:"+ak);
+        qiniuCloudUtil.getUpToken();
+    }
 
     @RequestMapping(method = RequestMethod.POST, value = "/upload")
     public Map upload(@RequestParam("file")MultipartFile file) throws IOException {

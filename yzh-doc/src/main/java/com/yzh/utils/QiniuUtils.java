@@ -13,27 +13,30 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStream;
-
+@Component
 public class QiniuUtils {
     @Value("${qiniu.AK}")
     private String ACCESS_KEY;
-    @Value("${qiniu.AK}")
+    @Value("${qiniu.SK}")
     private String SECRET_KEY;
     @Value("${qiniu.bucketname}")// 要上传的空间
     private String bucketname;
     @Value("${qiniu.DOMAIN}")
     private String DOMAIN;//域名
 
-    private Auth auth = Auth.create(ACCESS_KEY, SECRET_KEY);// 密钥
-
     //private static final String style = "自定义的图片样式";
-
+    private Auth getAuth() {
+        return Auth.create(ACCESS_KEY, SECRET_KEY);// 密钥
+    }
     public String getUpToken() {
-        return auth.uploadToken(bucketname, null, 3600, new StringMap().put("insertOnly", 1));
+
+        return getAuth().uploadToken(bucketname, null, 3600, new StringMap().put("insertOnly", 1));
     }
 
     // 普通上传
@@ -43,7 +46,7 @@ public class QiniuUtils {
         UploadManager uploadManager = new UploadManager(cfg);
         try {
             // 调用put方法上传
-            String token = auth.uploadToken(bucketname);
+            String token = getAuth().uploadToken(bucketname);
 
             Response res = uploadManager.put(filePath,null,token,null,null);
 
