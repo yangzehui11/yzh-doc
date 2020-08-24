@@ -20,7 +20,7 @@ import java.util.Map;
  * @create: 2020-07-27 17:47
  **/
 /*策略实体类*/
-@Component
+@Component(value = "pptx")
 public class PptxService extends TrsImgService {
     @Override
     public Map<String, Object> toImage(FileInputStream is) {

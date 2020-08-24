@@ -1,7 +1,9 @@
 package com.yzh.controller;
 
 
+import com.yzh.service.trsImgService.ITrsImgService;
 import com.yzh.service.trsImgService.TrsImgServiceFactory;
+import com.yzh.service.trsImgService.impl.PptService;
 import com.yzh.utils.QiniuUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.PDFRenderer;
@@ -11,28 +13,30 @@ import org.apache.poi.xslf.usermodel.XMLSlideShow;
 import org.apache.poi.xslf.usermodel.XSLFSlide;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.geom.Rectangle2D;
+import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
+@CrossOrigin
 @RestController
-public class DocController extends BaseController {
+public class DocController {
     @Autowired
     private QiniuUtils qiniuCloudUtil;
     @Autowired
     private TrsImgServiceFactory factory;
 
+    @Autowired
+    private ApplicationContext applicationContext;
     @RequestMapping(method = RequestMethod.POST, value = "/upload")
-    public Map upload(@RequestParam("file")MultipartFile file) throws IOException {
-//application/octet-stream
+    public Map upload(@RequestParam("file")MultipartFile file, HttpServletResponse response) throws IOException {
+        response.setHeader("Access-Control-Allow-Origin", "*");
         String houzui=file.getOriginalFilename().split("\\.")[1];
         FileInputStream fileImg = null;
         try {
@@ -41,23 +45,9 @@ public class DocController extends BaseController {
             f.deleteOnExit();
             Map map=new HashMap<String,Object>();
             fileImg = new FileInputStream(f);
-            return factory.creator(houzui).toImage(fileImg);
+            ITrsImgService cart = (ITrsImgService) applicationContext.getBean(houzui);
+            return cart.toImage(fileImg);
 
-            /*if(houzui.equals("ppt")){
-//                doPPT2003toImage(fileImg,map);
-            }else if (houzui.equals("pptx")){
-//                doPPT2007toImage(fileImg,map);
-            }else if(houzui.equals("pdf")){
-                PDFToImg(fileImg,map);
-            } else  if(houzui.equals("jpg")||houzui.equals("jpeg")){
-                String s=qiniuCloudUtil.upload(fileImg);
-                ArrayList list=new ArrayList<String>();
-                list.add(s);
-                map.put("arr",list);
-                *//*map.put("windth",);
-                map.put("height",pgsize.height);*//*
-            }
-            return map;*/
         } catch (Exception e) {
             e.printStackTrace();
             return  null;

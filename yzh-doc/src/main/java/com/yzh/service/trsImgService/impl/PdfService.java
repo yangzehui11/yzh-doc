@@ -13,7 +13,7 @@ import java.util.Map;
  * @create: 2020-07-27 17:48
  **/
 /*策略实体类*/
-@Component
+@Component(value = "pdf")
 public class PdfService implements ITrsImgService {
     @Override
     public Map<String, Object> toImage(FileInputStream is) {
