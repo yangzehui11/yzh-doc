@@ -2,17 +2,10 @@ package com.yzh.controller;
 
 
 import com.yzh.service.trsImgService.ITrsImgService;
-import com.yzh.service.trsImgService.TrsImgServiceFactory;
-import com.yzh.service.trsImgService.impl.PptService;
 import com.yzh.utils.QiniuUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.PDFRenderer;
-import org.apache.poi.hslf.model.Slide;
-import org.apache.poi.hslf.usermodel.SlideShow;
-import org.apache.poi.xslf.usermodel.XMLSlideShow;
-import org.apache.poi.xslf.usermodel.XSLFSlide;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,15 +22,14 @@ import java.util.Map;
 public class DocController {
     @Autowired
     private QiniuUtils qiniuCloudUtil;
-    @Autowired
-    private TrsImgServiceFactory factory;
 
     @Autowired
     private ApplicationContext applicationContext;
     @RequestMapping(method = RequestMethod.POST, value = "/upload")
     public Map upload(@RequestParam("file")MultipartFile file, HttpServletResponse response) throws IOException {
         response.setHeader("Access-Control-Allow-Origin", "*");
-        String houzui=file.getOriginalFilename().split("\\.")[1];
+        String[] arr = file.getOriginalFilename().split("\\.");
+        String houzui = arr[arr.length - 1];
         FileInputStream fileImg = null;
         try {
             File f= File.createTempFile("tmp", null);

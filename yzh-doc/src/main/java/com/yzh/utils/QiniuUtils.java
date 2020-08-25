@@ -59,7 +59,7 @@ public class QiniuUtils {
             Response r = e.response;
             // 请求失败时打印的异常的信息
             try {
-                // 响应的文本信息
+                //把抛出的异常转换成另一个异常
                 System.out.println(r.bodyString());
             } catch (QiniuException e1) {
                 // ignore
